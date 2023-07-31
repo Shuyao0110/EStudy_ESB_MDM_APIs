@@ -25,31 +25,28 @@ public class deptAPI implements IContextProcessor {
 	
 	public static String SearchCompany(String orgMdmCode, String tokenName, String modelName, String systemCodeName) throws Exception
 	{
-		Properties Econfig =
+		Properties mdmConfig =
 				ReadDatabaseConfigurationFile.ReadDatabaseConfiguration();
-		String url =
-		OAconfig.getProperty("MDMUrl");
-        URL    uri = new URL(url);
-        HttpURLConnection connection = (HttpURLConnection) uri.openConnection();
+        URL mdmUrl = new URL(mdmConfig.getProperty("mdmUrl"));
+        HttpURLConnection connection = (HttpURLConnection) mdmUrl.openConnection();
         connection.setRequestMethod("POST");
         connection.setReadTimeout(50000);
         connection.setConnectTimeout(100000);
         connection.setDoInput(true);  
 		connection.setDoOutput(true); 
         //��������ͷ
-		String mdmToken = Econfig.getProperty(tokenName);
+		String mdmToken = mdmConfig.getProperty(tokenName);
         connection.setRequestProperty("mdmtoken", mdmToken);
         connection.setRequestProperty("tenantid", "tenant");
         connection.setRequestProperty("Content-Type", "application/json");
         //���Ͳ���
-      
         connection.connect(); 
 		OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream(),"UTF-8"); 
 
 		//body����������put��JSONObject��
 		JSONObject parm = new JSONObject();
-		String systemCode = Econfig.getProperty(systemCodeName);
-		String gdCode = Econfig.getProperty(modelName);
+		String systemCode = mdmConfig.getProperty(systemCodeName);
+		String gdCode = mdmConfig.getProperty(modelName);
 		Collection<String> collection = new ArrayList<String>();
 		collection.add(orgMdmCode);
 		parm.put("systemCode", systemCode);
@@ -146,8 +143,11 @@ public class deptAPI implements IContextProcessor {
 					department.put("deptManagerThirdId", principal_code);
 					
 					//��department�����Eѧ�ӿڵĲ�����
-					String url = apiConfig.getProperty("EDeptUpdateUrl");
-					String returnArg = PostUrl(url,department);
+					String syncUrl = apiConfig.getProperty("EDeptSyncUrl");
+                    String recoveryUrl = apiConfig.getProperty("EDeptRecoveryUrl");
+                    
+                    String thirdIdUrl = apiConfig.getProperty("thirdIdUrl")
+					String returnArg = PostUrl(syncUrl,department);
 					JSONObject returnObj = new JSONObject(returnArg);
 					JSONObject mdMapping = new JSONObject();
 					Boolean singleSuccess = returnObj.getString("status").toString().equals("1")? true : false;
@@ -155,7 +155,7 @@ public class deptAPI implements IContextProcessor {
 					{
 						success = false;
 					}
-					mdMapping.put("mdmCode", deptJsonObject.getString("mdm_code"));
+					mdMapping.put("mdmCode", deptOneJSON.getString("mdm_code"));
 					mdMapping.put("entityCode", "g_org_test");
 					mdMapping.put("busiDataId", subcompanycode);
 					mdMapping.put("message", returnObj.getString("msg").toString());
@@ -174,7 +174,7 @@ public class deptAPI implements IContextProcessor {
 					JSONObject dept = new JSONObject();
 					dept.put("thirdId", deptThirdId);
 					dept.put("updatedatetime", updatedatetime);
-					String url = apiConfig.getProperty("EDeptDeleteUrl");
+                    String delUrl = apiConfig.getProperty("EDeptDelUrl")
 					String returnArg = PostUrl(url,dept);
 					//��װ����������ϵͳ����
 					JSONObject returnObj = new JSONObject(returnArg);
@@ -190,7 +190,7 @@ public class deptAPI implements IContextProcessor {
 							String returnMessage = "该部门或其子部门有激活用户";
 						}
 					}
-					mdMapping.put("mdmCode", deptJsonObject.getString("mdm_code"));
+					mdMapping.put("mdmCode", deptOneJSON.getString("mdm_code"));
 					mdMapping.put("entityCode", "g_org_test");
 					mdMapping.put("busiDataId", departmentcode);
 					mdMapping.put("message", returnMessage);
