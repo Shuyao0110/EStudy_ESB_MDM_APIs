@@ -1,0 +1,32 @@
+Manifest-Version: 1.0
+Require-Bundle: com.ufida.eip.engine-pvm-model;bundle-version="[1.0.0,
+ 2.0.0)", com.ufida.eip.engine-pvm-dao;bundle-version="[1.0.0,2.0.0)",
+  com.ufida.eip.sdo;bundle-version="[1.0.0,3.0.0)", com.ufida.eip.engi
+ ne-pvm-service;bundle-version="[1.0.0,2.0.0)", com.ufida.eip.common;b
+ undle-version="[1.0.0,2.0.0)", com.ufida.eip.engine-api;bundle-versio
+ n="[1.0.0,2.0.0)", com.ufida.eip.model.rulemap;bundle-version="1.0.0"
+ , com.ufida.eip.rulemap
+Bundle-ClassPath: .
+Bundle-Version: 1.0.0
+Bundle-Name: MDM_ESB_EXUE
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: MDM_ESB_EXUE
+Import-Package: com.ufida.eip.service;version="[1.0.0,2.0.0)", javax.w
+ s.rs;version="1.0.0", com.ufida.eip.core;version="[1.0.0,2.0.0)", org
+ .quartz.simpl, com.ufida.eip.comp.definition.service.api.abs, com.ufi
+ da.eip.typeconverter, com.ufida.eip.context;version="[1.0.0,2.0.0)", 
+ com.ufida.eip.transaction.command;version="[1.0.0,2.0.0)", com.ufida.
+ eip.timer.asynframework, com.ufida.eip.comp.annotation;version="[1.0.
+ 0,2.0.0)", com.ufida.eip.rulemap;version="[1.0.0,2.0.0)", org.springf
+ ramework.scheduling.quartz, com.ufida.eip.rest.service;version="1.0.0
+ ", com.ufida.eip.rest.ref;version="1.0.0", com.ufida.eip.typeconverte
+ r.basic, com.ufida.eip.repository;version="[1.0.0,2.0.0)", com.ufida.
+ eip.service.annotation;version="[1.0.0,2.0.0)", com.ufida.eip.comp;ve
+ rsion="[1.0.0,2.0.0)", com.ufida.eip.exception;version="[1.0.0,2.0.0)
+ ", com.ufida.eip.arg.service.support;version="[1.0.0,2.0.0)", com.ufi
+ da.eip.typeconverter.vo, com.ufida.eip.arg.ref.support;version="[1.0.
+ 0,2.0.0)", org.osgi.framework, com.ufida.eip.timer.service, com.ufida
+ .eip.comp.ref;version="[1.0.0,2.0.0)", com.ufida.eip.comp.service.sup
+ port;version="[1.0.0,2.0.0)"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+

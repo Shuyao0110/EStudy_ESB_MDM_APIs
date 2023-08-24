@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="GBK"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi" xmlns:af="http://www.uifda.com/eip/esb/asynframework" xmlns="http://www.springframework.org/schema/beans" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd http://www.uifda.com/eip/esb/asynframework http://www.uifda.com/eip/esb/asynframework/scheduler.xsd">
+  <bean id="processDefCreator" class="com.ufida.eip.pvmengine.ProcessCreator"></bean>
+  <bean id="processDef" factory-bean="processDefCreator" factory-method="createProcessDef">
+    <property name="name" value="com_sanhua_AccessTokenTimer"></property>
+    <property name="version" value="4"></property>
+    <property name="sub" value="false"></property>
+    <property name="useTX" value="false"></property>
+    <property name="persist" value="false"></property>
+    <property name="description" value="AccessTokenTimer"></property>
+    <property name="activityDefList">
+      <list>
+        <ref bean="node1"></ref>
+        <ref bean="node2"></ref>
+        <ref bean="node3"></ref>
+      </list>
+    </property>
+  </bean>
+  <bean id="flow.service.binding" class="com.ufida.eip.comp.service.support.FlowComponentServiceImpl">
+    <property name="bindingMap">
+      <map>
+        <entry key="TIMER">
+          <bean class="com.ufida.eip.timer.service.TimerServiceBinding">
+            <property name="serviceDefinition">
+              <bean class="com.ufida.eip.timer.service.TimerServiceDefinition">
+                <property name="asynHandle" value="false"></property>
+                <property name="saveOriginalData" value="false"></property>
+                <property name="controled" value="true"></property>
+              </bean>
+            </property>
+            <property name="scheduler">
+              <af:scheduler autoStartup="false">
+                <af:job repeatCount="1" repeatInterval="10" concurrent="false" scannerClassName="com.ufida.eip.timer.asynframework.TimerServiceScanner" timerJobClassName="com.ufida.eip.flow.timer.FlowTimerJob">
+                  <af:dispatcher>
+                    <af:threadPool corePoolSize="12" maxPoolSize="1000" queueCapacity="1000" keepAliveSeconds="0"></af:threadPool>
+                    <af:smartFrequency silientTimesToRise="10" checkTimeInterval="3600000" sencondsToRise="30000"></af:smartFrequency>
+                  </af:dispatcher>
+                </af:job>
+              </af:scheduler>
+            </property>
+          </bean>
+        </entry>
+      </map>
+    </property>
+  </bean>
+  <bean id="node1" factory-bean="processDefCreator" factory-method="createSchedulerActivity">
+    <property name="initial" value="true"></property>
+    <property name="name" value="node1"></property>
+    <property name="displayName" value="定时器"></property>
+    <property name="x" value="194"></property>
+    <property name="y" value="240"></property>
+    <property name="transitionDefList">
+      <list>
+        <bean factory-bean="processDefCreator" factory-method="createTransitionDef">
+          <property name="to" value="node2"></property>
+          <property name="order" value="-1"></property>
+          <property name="textX" value="0"></property>
+          <property name="textY" value="0"></property>
+          <property name="sourceAnchor" value="right"></property>
+          <property name="targetAnchor" value="left"></property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+  <bean id="node2" factory-bean="processDefCreator" factory-method="createJavaActivity">
+    <property name="fullClassName" value="com.sanhua.AsyncAccessToken"></property>
+    <property name="name" value="node2"></property>
+    <property name="displayName" value="java结点"></property>
+    <property name="x" value="416"></property>
+    <property name="y" value="243"></property>
+    <property name="transitionDefList">
+      <list>
+        <bean factory-bean="processDefCreator" factory-method="createTransitionDef">
+          <property name="to" value="node3"></property>
+          <property name="order" value="-1"></property>
+          <property name="textX" value="0"></property>
+          <property name="textY" value="0"></property>
+          <property name="sourceAnchor" value="right"></property>
+          <property name="targetAnchor" value="left"></property>
+        </bean>
+      </list>
+    </property>
+    <property name="parentIds">
+      <list>
+        <value>node1</value>
+      </list>
+    </property>
+  </bean>
+  <bean id="node3" factory-bean="processDefCreator" factory-method="createEndActivity">
+    <property name="name" value="node3"></property>
+    <property name="displayName" value="结束"></property>
+    <property name="x" value="611"></property>
+    <property name="y" value="240"></property>
+    <property name="parentIds">
+      <list>
+        <value>node2</value>
+      </list>
+    </property>
+  </bean>
+</beans>
